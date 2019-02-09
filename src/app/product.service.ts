@@ -17,4 +17,10 @@ export class ProductService {
     this.messageService.add('ProductService: fetched products');
       return of(PRODUCTS);
   }
+
+  getProduct(id: number): Observable<Product> {
+    // TODO: send the message _after_ fetching the product
+    this.messageService.add(`ProductService: fetched product id=${id}`);
+    return of(PRODUCTS.find(product => product.id === id));
+  }
 }
