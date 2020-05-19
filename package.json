@@ -25,6 +25,7 @@
     "kind-of": "^6.0.3",
     "minimist": "^1.2.5",
     "rxjs": "^6.3.3",
+    "ws": "^7.3.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
