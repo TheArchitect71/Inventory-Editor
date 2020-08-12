@@ -27,7 +27,7 @@
     "minimist": "^1.2.5",
     "parsejson": "0.0.3",
     "rxjs": "^6.3.3",
-    "serialize-javascript": "^3.0.0",
+    "serialize-javascript": "^3.1.0",
     "set-value": "^3.0.2",
     "ws": "^7.3.0",
     "zone.js": "~0.8.26"
