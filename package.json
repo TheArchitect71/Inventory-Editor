@@ -23,7 +23,7 @@
     "angular-in-memory-web-api": "^0.8.0",
     "core-js": "^2.5.4",
     "kind-of": "^6.0.3",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "minimist": "^1.2.5",
     "parsejson": "0.0.3",
     "rxjs": "^6.3.3",
