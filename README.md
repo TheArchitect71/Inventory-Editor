@@ -1,30 +1,49 @@
 # Inventory Editor
 
-Angular 22 local inventory tracker: add/edit/delete products, search by name/SKU/category, filter low stock, calculate stock/value totals, and export JSON. It runs offline with no account or backend. The existing `inventory-editor.items.v1` storage key and record format are preserved. Run at the same origin/port as before to keep access to that browser's saved inventory.
+A browser-based inventory tracker for managing products, stock levels, and inventory value. It stores your records locally in the browser and needs no account, server API, or database.
 
-## Run
+## What you can do
 
-Node is pinned to 26.10.0 in `.nvmrc`. Angular supports Node ^22.22.3, ^24.15.0, or >=26.0.0.
+- Add, edit, and delete products with names, SKUs, categories, quantities, and prices.
+- Search products and filter low-stock items.
+- View product counts, total units, and inventory value.
+- Export inventory as JSON.
+
+## Preview
+
+![A browser-based inventory tracker for managing products, stock levels, and inventory value](docs/screenshots/desktop.png)
+
+Captured from the running application on September 30, 2026. Any sample records shown are demonstration or isolated test data, not data included with a fresh installation.
+
+<details>
+<summary>Mobile view</summary>
+
+![Mobile a browser-based inventory tracker for managing products, stock levels, and inventory value](docs/screenshots/mobile.png)
+
+</details>
+
+## Run locally
+
+Use the Node version in `.nvmrc` (currently 26.10.0) and npm. Run these commands from the repository root.
 
 ```sh
+nvm use  # if you manage Node with nvm
 npm ci
 npm start
 ```
 
-Open http://127.0.0.1:5173 and stop the foreground server with Ctrl+C.
+Open [http://127.0.0.1:5173](http://127.0.0.1:5173). Keep the server in the foreground; stop it with **Ctrl+C**.
 
-## Checks
+## Current scope
+
+Inventory belongs to the browser and origin where it was saved. Keep the same hostname and port to access existing records; clearing browser storage removes them. Current Angular source is in `src/`; `app/` and `legacy-angular6/` preserve earlier implementations.
+
+## Development
 
 ```sh
 npm run build
 npm run typecheck
-npm run test:logic
 npm test -- --browsers=ChromeHeadless
-npm audit
 ```
 
-Four inventory logic tests and three Angular tests cover calculations, validation, filtering, corrupt storage, original storage compatibility, and rendering. Desktop/mobile browser validation also covers add/edit/delete, duplicate SKU rejection, search/low-stock controls, reload persistence, exported JSON content, cancel, no page overflow, and no external HTTP requests.
-
-TypeScript 6.0.3 is held within Angular 22's >=6.0 <6.1 compatibility range. Jasmine 6.3/types 6 are held because Zone.js 0.16.3's Jasmine adapter is incompatible with Jasmine 7's read-only describe globals. Production bundle is about 251 KB. System fonts replace remote font requests.
-
-Original plain-JavaScript implementation remains in `app/` and root `index.html` as a reference. The earlier Angular 6 prototype is preserved in `legacy-angular6/`. Current build and server use `src/main.ts` and Angular configuration. Saved user inventory is browser-local and is not bundled or seeded.
+Browser tests require Chrome or Chromium; set `CHROME_BIN` if it is outside the standard installation path. Angular 22 currently requires TypeScript 6.0.x. The Jasmine 6 test dependencies are retained for compatibility with Zone.js.
