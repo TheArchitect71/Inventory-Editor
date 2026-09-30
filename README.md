@@ -1,27 +1,30 @@
-# Ecommerce
+# Inventory Editor
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.1.4.
+Angular 22 local inventory tracker: add/edit/delete products, search by name/SKU/category, filter low stock, calculate stock/value totals, and export JSON. It runs offline with no account or backend. The existing `inventory-editor.items.v1` storage key and record format are preserved. Run at the same origin/port as before to keep access to that browser's saved inventory.
 
-## Development server
+## Run
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Node is pinned to 26.10.0 in `.nvmrc`. Angular supports Node ^22.22.3, ^24.15.0, or >=26.0.0.
 
-## Code scaffolding
+```sh
+npm ci
+npm start
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Open http://127.0.0.1:5173 and stop the foreground server with Ctrl+C.
 
-## Build
+## Checks
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+```sh
+npm run build
+npm run typecheck
+npm run test:logic
+npm test -- --browsers=ChromeHeadless
+npm audit
+```
 
-## Running unit tests
+Four inventory logic tests and three Angular tests cover calculations, validation, filtering, corrupt storage, original storage compatibility, and rendering. Desktop/mobile browser validation also covers add/edit/delete, duplicate SKU rejection, search/low-stock controls, reload persistence, exported JSON content, cancel, no page overflow, and no external HTTP requests.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+TypeScript 6.0.3 is held within Angular 22's >=6.0 <6.1 compatibility range. Jasmine 6.3/types 6 are held because Zone.js 0.16.3's Jasmine adapter is incompatible with Jasmine 7's read-only describe globals. Production bundle is about 251 KB. System fonts replace remote font requests.
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Original plain-JavaScript implementation remains in `app/` and root `index.html` as a reference. The earlier Angular 6 prototype is preserved in `legacy-angular6/`. Current build and server use `src/main.ts` and Angular configuration. Saved user inventory is browser-local and is not bundled or seeded.
