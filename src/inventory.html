@@ -1,0 +1,52 @@
+
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">▦</span><span>Inventory<br><strong>Editor</strong></span></div>
+      <div class="sidebar-label">WORKSPACE</div>
+      <a class="nav-item active" href="#inventory" aria-current="page"><span aria-hidden="true">▤</span> Inventory</a>
+      <div class="sidebar-footer"><span class="status-dot" aria-hidden="true"></span> Saved on this device</div>
+    </aside>
+
+    <main id="inventory" class="main-content">
+      <header class="topbar"><span>Workspace <span class="crumb">/</span> Inventory</span><span class="topbar-right"><span class="status-dot" aria-hidden="true"></span> Local workspace</span></header>
+      <div class="content">
+        <div class="page-heading">
+          <div><p class="eyebrow">YOUR WORKSPACE</p><h1>Inventory</h1><p class="subtitle">Keep track of what you have, what is running low, and what it is worth.</p></div>
+          <button class="button primary add-top" id="add-item" (click)="openForm()" type="button"><span aria-hidden="true">＋</span> Add product</button>
+        </div>
+
+        <section class="stats" aria-label="Inventory summary">
+          <article class="stat-card"><p>Total products</p><strong id="stat-products">{{summary.products|number}}</strong><span>Distinct items</span></article>
+          <article class="stat-card"><p>Units in stock</p><strong id="stat-units">{{summary.units|number}}</strong><span>Across all products</span></article>
+          <article class="stat-card"><p>Low stock</p><strong id="stat-low">{{summary.lowStock|number}}</strong><span>At or below threshold</span></article>
+          <article class="stat-card"><p>Inventory value</p><strong id="stat-value">{{summary.value|currency:'USD'}}</strong><span>Quantity × unit price</span></article>
+        </section>
+
+        <section class="inventory-panel" aria-labelledby="list-title">
+          <div class="panel-heading"><div><h2 id="list-title">Products</h2><p id="list-description">Manage your inventory in one place.</p></div><button class="button quiet" id="export-items" (click)="exportItems()" type="button">Export JSON</button></div>
+          <div class="toolbar">
+            <label class="search-wrap"><span class="search-icon" aria-hidden="true">⌕</span><span class="sr-only">Search products</span><input id="search" [(ngModel)]="query" type="search" placeholder="Search name, SKU, or category" autocomplete="off"></label>
+            <div class="filter-group" role="group" aria-label="Stock filter"><button type="button" class="filter" [class.active]="stockFilter==='all'" (click)="stockFilter='all'" [attr.aria-pressed]="stockFilter==='all'">All products</button><button type="button" class="filter" [class.active]="stockFilter==='low'" (click)="stockFilter='low'" [attr.aria-pressed]="stockFilter==='low'">Low stock</button></div>
+          </div>
+          <div class="table-scroll" [hidden]="visible.length===0"><table><thead><tr><th scope="col">Product</th><th scope="col">SKU</th><th scope="col">Category</th><th scope="col" class="number">In stock</th><th scope="col" class="number">Unit price</th><th scope="col">Status</th><th scope="col" class="actions-heading">Actions</th></tr></thead><tbody id="products-body">@for(item of visible;track item.id){<tr><td><div class="product-name">{{item.name}}</div></td><td class="sku">{{item.sku}}</td><td>{{item.category||'—'}}</td><td class="number quantity">{{item.quantity|number}}</td><td class="number">{{item.unitPrice|currency:'USD'}}</td><td><span class="status" [class.status-low]="low(item)" [class.status-ok]="!low(item)">{{low(item)?'Low stock':'In stock'}}</span></td><td class="row-actions"><button type="button" (click)="openForm(item)" [attr.aria-label]="'Edit '+item.name">Edit</button><button type="button" (click)="deleteItem(item)" [attr.aria-label]="'Delete '+item.name">Delete</button></td></tr>}</tbody></table></div>
+          <div id="empty-state" class="empty-state" [hidden]="visible.length>0">@if(items.length===0){<div class="empty-icon" aria-hidden="true">▦</div><h3>Your inventory starts here</h3><p>Add a product to begin tracking stock and value.</p><button type="button" class="button primary" (click)="openForm()">Add your first product</button>}@else{<div class="empty-icon" aria-hidden="true">⌕</div><h3>No matching products</h3><p>Try a different search or switch to all products.</p>}</div>
+          <footer class="panel-footer"><span id="result-count">{{visible.length}} {{visible.length===1?"product":"products"}}</span><span>Changes save automatically in this browser</span></footer>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <dialog #dialog id="item-dialog" aria-labelledby="dialog-title">
+    <form id="item-form" (ngSubmit)="save()" novalidate>
+      <div class="dialog-heading"><div><p class="eyebrow">INVENTORY ITEM</p><h2 id="dialog-title">{{editingId?"Edit product":"Add product"}}</h2></div><button type="button" class="icon-button" id="close-dialog" (click)="close()" aria-label="Close">×</button></div>
+      <div class="dialog-body">
+        <label>Product name <span aria-hidden="true">*</span><input name="name" [value]="form.name??''" (input)="form.name=$any($event.target).value" required maxlength="100" placeholder="e.g. Wireless keyboard"></label>
+        <div class="field-row"><label>SKU <span aria-hidden="true">*</span><input name="sku" [value]="form.sku??''" (input)="form.sku=$any($event.target).value" required maxlength="60" placeholder="e.g. KB-001"></label><label>Category<input name="category" [value]="form.category??''" (input)="form.category=$any($event.target).value" maxlength="60" placeholder="e.g. Electronics"></label></div>
+        <div class="field-row"><label>Quantity<input name="quantity" [value]="form.quantity??''" (input)="form.quantity=$any($event.target).value" type="number" min="0" step="1" value="0" required></label><label>Low stock threshold<input name="reorderLevel" [value]="form.reorderLevel??''" (input)="form.reorderLevel=$any($event.target).value" type="number" min="0" step="1" value="5" required></label></div>
+        <label>Unit price (USD)<input name="unitPrice" [value]="form.unitPrice??''" (input)="form.unitPrice=$any($event.target).value" type="number" min="0" step="0.01" value="0" required></label>
+        <p class="form-error" id="form-error" role="alert" [hidden]="!error">{{error}}</p>
+      </div>
+      <div class="dialog-footer"><button type="button" class="button quiet" id="cancel-dialog" (click)="close()">Cancel</button><button type="submit" class="button primary" id="save-button">{{editingId?"Save changes":"Add product"}}</button></div>
+    </form>
+  </dialog>
+  <div id="announcement" class="sr-only" role="status" aria-live="polite">{{announcement}}</div>
