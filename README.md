@@ -1,4 +1,6 @@
-# Inventory Editor
+# Inventory Editor (archived)
+
+Inventory management is now integrated into [Risa](https://github.com/TheArchitect71/Risa/tree/chore/dependency-refresh-2026-09). This standalone repository is retained as a read-only historical reference.
 
 A browser-based inventory tracker for managing products, stock levels, and inventory value. It stores your records locally in the browser and needs no account, server API, or database.
 
@@ -37,6 +39,8 @@ Open [http://127.0.0.1:5173](http://127.0.0.1:5173). Keep the server in the fore
 ## Current scope
 
 Inventory belongs to the browser and origin where it was saved. Keep the same hostname and port to access existing records; clearing browser storage removes them. Current Angular source is in `src/`; `app/` and `legacy-angular6/` preserve earlier implementations.
+
+Risa includes an integrated Inventory page for its shop products. Existing standalone records remain in the original browser’s local storage and do not automatically transfer to Risa. The archived source can be cloned and run at the same hostname and port to export those records as JSON.
 
 ## Development
 
